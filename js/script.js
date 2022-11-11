@@ -46,7 +46,7 @@ window.onload = function () {
                     console.log(movies)
                     movies.forEach((movie) => {
                         row.innerHTML += `<div class="col-md-2">
-                        <img class="movie-cover" src="${movie.imageUrl}">
+                        <a id="edit" href="details.html?id=${movie._id}"><img class="movie-cover" src="${movie.imageUrl}"></a>
                     </div>`
                     })
 
