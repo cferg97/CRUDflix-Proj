@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OFFICE</title>
+    <link rel="stylesheet" href="./css/styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center text-center mt-4">
+            <div class="col-md-6">
+                <h2>Add or Edit a product</h2>
+
+                <form onsubmit = "onFormSubmit(event)" id="form" class="mt-5">
+                    <div class="form-group">
+                        <label for="item-name">Movie Name</label>
+                        <input type="text" class="form-control" id="movie-name" aria-describedby="movie Input"
+                            placeholder="Enter Movie Name">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Movie Description</label>
+                        <input type="text" class="form-control" id="description" placeholder="Enter Movie Desc.">
+                    </div>
+                    <div class="form-group">
+                        <label for="genre">Genre</label>
+                        <input type="text" class="form-control" id="genre" aria-describedby="genre Input"
+                            placeholder="Enter movie genre">
+                    </div>
+                    <div class="form-group">
+                        <label for="image">Image URL</label>
+                        <input type="text" class="form-control" id="image" aria-describedby="image Input"
+                            placeholder="Enter image URL">
+                    </div>
+                    <button type="submit" class=" btn btn-primary">Submit</button>
+                    <div class="form-group d-flex justify-content-end">
+                        <button id="delete-btn" type="button" class="d-none btn btn-danger mr-auto w-25" onclick="deleteProduct()">
+                          Delete
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-fluid" style="width: 95%">
+        <div class="row" id="main">
+        </div>
+    </div>
+
+
+
+<script>
+    const BASE_URL = "https://striveschool-api.herokuapp.com/api/movies"
+const headers = new Headers({
+"Content-Type": "application/json",
+Authorization:
+"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZjQyMmQ0YmUzZDAwMTU4NDVmZWYiLCJpYXQiOjE2NjgxMDk5OTcsImV4cCI6MTY2OTMxOTU5N30.vdaqA6iDLq3NY1CpqygeUpueFbYiffQOo2ZFwNKiWAc" ,
+})
+arrayOfCats = []
+const getCats = (callback) => {
+    fetch (BASE_URL, {headers})
+    .then((res) => res.json())
+    .then((data) => callback(null, data))
+    .catch((error) => callback(error, null))
+}
+
+window.onload = function () {
+    getCats((error, data) => {
+        if(error){
+            console.log({error})
+        }
+        else{
+            const container = document.getElementById("main")
+            container.innerHTML = ""
+            data.forEach((category) => {
+                
+                container.innerHTML+= `<div class="movie-gallery m-2">
+                <h5 class="text-light mt-2 mb-2">${category}</h5>
+                <div class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <div class="movie-row">
+                                <div class="row" id="${category}">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>`
+            })
+            data.forEach((category) => {
+                fetch (BASE_URL + "/" + category, {headers})
+                .then ((response) => {
+                    return response.json()
+                })
+                .then((movies) => {
+                    let row = document.getElementById(`${category}`)
+                    console.log(movies)
+                    movies.forEach((movie) => {
+                        row.innerHTML += `<div class="col-md-2">
+                        <img class="movie-cover" src="${movie.imageUrl}">
+                    </div>`
+                    })
+
+                })
+        })}
+    })
+}
+
+    async function onFormSubmit(event) {
+        event.preventDefault()
+
+        const newMovie = {
+            name: document.getElementById("movie-name").value, 
+            description: document.getElementById("description").value,
+            category: document.getElementById("genre").value,
+            imageUrl: document.getElementById("image").value 
+        }
+
+        const options = {
+            method: "POST",
+            body: JSON.stringify(newMovie),
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization":
+                "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZjQyMmQ0YmUzZDAwMTU4NDVmZWYiLCJpYXQiOjE2NjgxMDk5OTcsImV4cCI6MTY2OTMxOTU5N30.vdaqA6iDLq3NY1CpqygeUpueFbYiffQOo2ZFwNKiWAc" ,
+                }
+            }
+        try {
+            const endpoint = "https://striveschool-api.herokuapp.com/api/movies"
+            const response = await fetch(endpoint, options)
+
+            if (response.ok) {
+                alert("Movie added successfully!")
+            }
+            else {
+                throw new Error()
+            }
+        }
+        catch (error) {
+            console.error(error)
+        }
+    }
+
+
+
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js"
+integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0"
+crossorigin="anonymous"></script>
+</body>
+</html>
