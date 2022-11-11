@@ -118,6 +118,7 @@
             <h2 class="text-light" style="font-size: 3em;">${movie.name}</h2>
             <h5 class="card-title text-light">Category: ${movie.category}</h5>
             <p class="text-light">${movie.description}</p>
+            <button class="btn btn-danger" onclick="deleteProduct()">DELETE</button>
         </div>
     </div>`
     container.appendChild(movieCard)
@@ -133,6 +134,19 @@
     window.onload = () => {
         getMovieDetails()
     }
+
+
+    async function deleteProduct() {
+        try{
+            const response = await fetch(BASE_URL + id, { method: "DELETE", headers})
+            alert("Movie Deleted Successfully")
+            location.assign("index.html")
+        }
+        catch(error){
+            alert(error.message)
+        }
+    }
+
 </script>
 </body>
 </html>

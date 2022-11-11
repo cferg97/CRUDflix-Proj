@@ -23,7 +23,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
     <link href="css/styles.css" rel="stylesheet">
-    <!-- <script src="./js/script.js" defer></script> -->
+    <script src="./js/script.js" defer></script>
     <title>Netflix</title>
 </head>
 
@@ -158,12 +158,13 @@
 
 
 <script>
-    const BASE_URL = "https://striveschool-api.herokuapp.com/api/movies"
+const BASE_URL = "https://striveschool-api.herokuapp.com/api/movies"
 const headers = new Headers({
 "Content-Type": "application/json",
 Authorization:
 "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZjQyMmQ0YmUzZDAwMTU4NDVmZWYiLCJpYXQiOjE2NjgxMDk5OTcsImV4cCI6MTY2OTMxOTU5N30.vdaqA6iDLq3NY1CpqygeUpueFbYiffQOo2ZFwNKiWAc" ,
 })
+
 arrayOfCats = []
 const getCats = (callback) => {
     fetch (BASE_URL, {headers})
