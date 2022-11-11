@@ -99,12 +99,12 @@
 
 
 <script>
-        const params = new URLSearchParams(location.search)
-        const id = params.get("_id")
+        const params = new URLSearchParams(window.location.search)
+        const id = params.get("id")
         const BASE_URL = "https://striveschool-api.herokuapp.com/api/movies/"
         const headers = new Headers({
         "Content-Type": "application/json",
-        Authorization:
+        "Authorization":
         "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZjQyMmQ0YmUzZDAwMTU4NDVmZWYiLCJpYXQiOjE2NjgxMDk5OTcsImV4cCI6MTY2OTMxOTU5N30.vdaqA6iDLq3NY1CpqygeUpueFbYiffQOo2ZFwNKiWAc" ,
     })
 
@@ -112,20 +112,21 @@
         let container = document.getElementById("main")
         const movieCard = document.createElement("div")
         movieCard.innerHTML = `
-        <div class="d-flex ml-auto mr-auto">
-        <img src="${movie.imageUrl}" style="width: 40vw; border: 2px solid black; border-radius: 20px;" alt="${movie.name}" />
+        <div class="card justify-items-center">
+        <img class="mt-3" src="${movie.imageUrl}" style="width: 300px; border: 2px solid white; border-radius: 20px; margin: 0 auto;" />
         <div class="card-body">
-            <h2 style="font-size: 3em;">${movie.name}</h2>
-            <h5 class="card-title text-muted">Brand: ${movie.category}</h5>
-            <p>${movie.description}</p>
+            <h2 class="text-light" style="font-size: 3em;">${movie.name}</h2>
+            <h5 class="card-title text-light">Category: ${movie.category}</h5>
+            <p class="text-light">${movie.description}</p>
         </div>
     </div>`
     container.appendChild(movieCard)
     }
 
     async function getMovieDetails() {
-        const response = await fetch(BASE_URL + id, {headers})
+        const response = await fetch(BASE_URL + "id/" + id, { headers })
         const movie = await response.json()
+        console.log(movie)
         renderMovie(movie)
     }
 
