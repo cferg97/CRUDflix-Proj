@@ -121,10 +121,10 @@
                 <div class="col-md-6">
                     <h2 style="color: white;">Add or Edit a Movie</h2>
 
-                    <form id="form" class="mt-5" style="color: white;">
+                    <form onsubmit="onFormSubmit(event)" id="form" class="mt-5" style="color: white;">
                         <div class="form-group">
-                            <label for="name">Movie Name</label>
-                            <input type="text" class="form-control" id="name" aria-describedby="movie Input"
+                            <label for="item-name">Movie Name</label>
+                            <input type="text" class="form-control" id="movie-name" aria-describedby="movie Input"
                                 placeholder="Enter Movie Name">
                         </div>
                         <div class="form-group">
@@ -132,16 +132,21 @@
                             <input type="text" class="form-control" id="description" placeholder="Enter Movie Desc.">
                         </div>
                         <div class="form-group">
-                            <label for="genre">Category</label>
-                            <input type="text" class="form-control" id="category" aria-describedby="genre Input"
+                            <label for="genre">Genre</label>
+                            <input type="text" class="form-control" id="genre" aria-describedby="genre Input"
                                 placeholder="Enter movie genre">
                         </div>
                         <div class="form-group">
-                            <label for="imageUrl">Image URL</label>
-                            <input type="text" class="form-control" id="imageUrl" aria-describedby="image Input"
+                            <label for="image">Image URL</label>
+                            <input type="text" class="form-control" id="image" aria-describedby="image Input"
                                 placeholder="Enter image URL">
                         </div>
                         <button type="submit" class=" btn btn-primary mt-2">Submit</button>
+                        <div class="form-group d-flex justify-content-end">
+                            <button id="delete-btn" type="button" class="d-none btn btn-danger mr-auto w-25"
+                                onclick="deleteProduct()">
+                                Delete
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -154,72 +159,55 @@
         </div>
 
 
+
         <script>
-            const params = new URLSearchParams (location.search)
+            const params = new URLSearchParams(window.location.search)
             const id = params.get("id")
             const BASE_URL = "https://striveschool-api.herokuapp.com/api/movies/"
             const headers = new Headers({
-            "Content-Type": "application/json",
-            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZjQyMmQ0YmUzZDAwMTU4NDVmZWYiLCJpYXQiOjE2NjgxMDk5OTcsImV4cCI6MTY2OTMxOTU5N30.vdaqA6iDLq3NY1CpqygeUpueFbYiffQOo2ZFwNKiWAc" ,
-    })
-        const method = id ? "PUT" : "POST"
-
-        const postMovie = (movie, callback) => {
-            const endpoint = id ? BASE_URL + id : BASE_URL
-            fetch(endpoint, {headers, method, body: JSON.stringify(movie)})
-            .then((res) => res.json())
-            .then((data) => callback(null, data))
-            .catch((error) => callback(error, null))
-
-            fetch(endpoint, {headers, method, body: JSON.stringify(movie)})
-            .then((res) => res.json())
-            .then((data) => callback(null, data))
-            .catch((error) => callback(error, null))
-        }
-
-        const formOnSubmit = function (e) {
-            e.preventDefault()
-            const name = document.getElementById("name").value
-            const description = document.getElementById("description").value
-            const category = document.getElementById("category").value 
-            const imageUrl = document.getElementById("imageUrl").value
-            const movie = { name, description, category, imageUrl }
-            postMovie(movie, (err, data) => {
-                if (err) {
-                    alert(err.message)
-                }
-                else {
-                    e.target.reset()
-                    alert("Movie Added Successfully")
-                    location.assign("index.html")
-                }
+                "Content-Type": "application/json",
+                Authorization:
+                    "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZjQyMmQ0YmUzZDAwMTU4NDVmZWYiLCJpYXQiOjE2NjgxMDk5OTcsImV4cCI6MTY2OTMxOTU5N30.vdaqA6iDLq3NY1CpqygeUpueFbYiffQOo2ZFwNKiWAc",
             })
-        }
 
-        async function getMovieDetails(id) {
-            try{
-                const response = await fetch(BASE_URL + "id/" + id, { headers })
-                const movie = await response.json()
-
-                Object.keys(movie).forEach(key => {
-                    const field = document.querySelector(`#${key}`)
-                    if (field) field.value = movie[key]
-                })
-            }
-            catch (error){
-                alert(error.message)
-            }
             
-        }
 
-        window.onload = function() {
-            const form = document.getElementById("form")
-            form.onsubmit = formOnSubmit
+            async function onFormSubmit(event) {
+                event.preventDefault()
 
-            if (id) {
-                getMovieDetails(id)
+                const newMovie = {
+                    name: document.getElementById("movie-name").value,
+                    description: document.getElementById("description").value,
+                    category: document.getElementById("genre").value,
+                    imageUrl: document.getElementById("image").value
+                }
+
+                const options = {
+                    method: "POST",
+                    body: JSON.stringify(newMovie),
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization":
+                            "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MzZjZjQyMmQ0YmUzZDAwMTU4NDVmZWYiLCJpYXQiOjE2NjgxMDk5OTcsImV4cCI6MTY2OTMxOTU5N30.vdaqA6iDLq3NY1CpqygeUpueFbYiffQOo2ZFwNKiWAc",
+                    }
+                }
+                try {
+                    const endpoint = "https://striveschool-api.herokuapp.com/api/movies"
+                    const response = await fetch(endpoint, options)
+
+                    if (response.ok) {
+                        alert("Movie Added Successfully")
+                        location.assign("index.html")
+                    }
+                    else {
+                        throw new Error()
+                    }
+                }
+                catch (error) {
+                    console.error(error)
+                }
             }
-        }
+
 
 
 
